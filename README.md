@@ -4,7 +4,7 @@ My name is Jacob Pettit and I'm a machine learning researcher at [Lawrence Liver
 
 I keep a blog [here](https://themerge.substack.com) and aim to put out an email newsletter once a week. I write about tech and AI and am working on a series of interviews detailing a "day in the life" of various people in tech. Consider subscribing if that's interesting to you!
 
-<iframe src="https://themerge.substack.com/embed" width="480" height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://themerge.substack.com/embed" width="480" height="320" style="background-color:white; color:black;" frameborder="0" scrolling="no"></iframe>
 
 ## Links to selected blog posts
 
