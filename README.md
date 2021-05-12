@@ -8,14 +8,14 @@ I keep a blog [here](https://themerge.substack.com) and aim to put out an email 
 
 ## Links to selected blog posts
 
-- Weird RL with hyperparameter optimizers [`part-1`](https://themerge.substack.com/p/weird-rl-with-hyperparameter-optimizers) [`part-2`](https://themerge.substack.com/p/weird-rl-part-2-training-in-the-browser)
+- Weird RL with hyperparameter optimizers [part-1](https://themerge.substack.com/p/weird-rl-with-hyperparameter-optimizers) [part-2](https://themerge.substack.com/p/weird-rl-part-2-training-in-the-browser)
 - [Breaking a Pong-playing RL agent](https://themerge.substack.com/p/breaking-a-pong-playing-rl-agent)
 
 ## Publications
 
-- "Improving Exploration in Policy Gradient Search: Application to Symbolic Optimization" [`paper-pdf`](https://mathai-iclr.github.io/papers/papers/MATHAI_16_paper.pdf) [`poster-pdf`](https://mathai-iclr.github.io/papers/posters/MATHAI_16_poster.png)
-- "Machine Learning Models for Identifying Risk Factors and Prediction of ALS Progression" [`video-talk`](https://www.youtube.com/watch?v=z6pCejDWXBA)
-- "Increasing performance of electric vehicles in ride-hailing services using deep reinforcement learning" [`paper-arxiv`](https://arxiv.org/abs/1912.03408) [`video-talk`](https://www.climatechange.ai/papers/neurips2019/33.html)
+- "Improving Exploration in Policy Gradient Search: Application to Symbolic Optimization" [paper-pdf](https://mathai-iclr.github.io/papers/papers/MATHAI_16_paper.pdf) [poster-pdf](https://mathai-iclr.github.io/papers/posters/MATHAI_16_poster.png)
+- "Machine Learning Models for Identifying Risk Factors and Prediction of ALS Progression" [talk-video](https://www.youtube.com/watch?v=z6pCejDWXBA)
+- "Increasing performance of electric vehicles in ride-hailing services using deep reinforcement learning" [arxiv-paper](https://arxiv.org/abs/1912.03408) [talk-video](https://www.climatechange.ai/papers/neurips2019/33.html)
 
 ## About Me
 
