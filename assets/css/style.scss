@@ -3,6 +3,11 @@
 
 @import "{{ site.theme }}";
 
+html, body {
+    background-color: #24252e;
+    color: #dbe3da;
+}
+
 a {
     color: #3D57FF;
 }
