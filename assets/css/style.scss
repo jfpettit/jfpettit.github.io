@@ -3,6 +3,7 @@
 
 @import "{{ site.theme }}";
 @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 html, body {
     background-color: #24252e;
@@ -42,6 +43,7 @@ li {
 
 a {
     color: #3D57FF;
+    font-family: 'VT323', monospace;
 }
 
 a:hover {
