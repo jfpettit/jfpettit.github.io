@@ -3,11 +3,12 @@
 
 @import "{{ site.theme }}";
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 html, body {
     background-color: #24252e;
     color: #dbe3da;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 h1, h2, h3, h4 {
@@ -16,15 +17,15 @@ h1, h2, h3, h4 {
 }
 
 h1 {
-    font-size: 60px;
-}
-
-h2 {
     font-size: 40px;
 }
 
+h2 {
+    font-size: 25px;
+}
+
 p {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Roboto', sans-serif;
     font-size: large;
 }
 
