@@ -2,11 +2,12 @@
 ---
 
 @import "{{ site.theme }}";
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
 html, body {
     background-color: #24252e;
     color: #dbe3da;
-    font-family:'Courier New', Courier, monospace;
+    font-family: 'Roboto Slab', serif;
 }
 
 h1, h2, h3, h4 {
