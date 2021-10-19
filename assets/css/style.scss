@@ -43,11 +43,15 @@ li {
 
 a {
     color: #3D57FF;
-    font-family: 'VT323', monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: large;
 }
 
 a:hover {
     color: #3D57FF;
     font-weight: bold;
+}
+
+.title {
+    font-size: 35px;
 }
