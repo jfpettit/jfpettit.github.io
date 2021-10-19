@@ -33,14 +33,6 @@ li {
     font-size: large;
 }
 
-.navig {
-    font-family: 'Roboto Mono', monospace;
-}
-
-.description{
-    font-family: 'Roboto Mono', monospace;
-}
-
 a {
     color: #3D57FF;
     font-family: 'Roboto Mono', monospace;
@@ -52,6 +44,6 @@ a:hover {
     font-weight: bold;
 }
 
-.title {
+a.title {
     font-size: 35px;
 }
