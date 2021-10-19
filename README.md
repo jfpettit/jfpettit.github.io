@@ -2,9 +2,7 @@
 
 My name is Jacob Pettit and I'm a machine learning researcher at [Lawrence Livermore National Laboratory](https://www.llnl.gov). I have my Bachelor's degree in [Computational Science](https://www.sc.fsu.edu) from [Florida State University (FSU)](https://www.fsu.edu/). My research focuses on reinforcement learning and its applications, and leveraging reinforcement learning for discrete optimization (like in neural architecure search).
 
-I keep a blog [here](https://themerge.substack.com) and aim to put out an email newsletter (optimistically, but not really) once a week. I write about tech and AI and am working on a series of interviews detailing a "day in the life" of various people in tech and science. Consider subscribing if that's interesting to you!
-
-<iframe src="https://themerge.substack.com/embed" width="480" height="320" style="background-color:white; color:black;" frameborder="0" scrolling="no"></iframe>
+I keep a blog [here](https://themerge.substack.com) whenever I feel inspired to write something. I write about tech, AI and science. Consider subscribing if that's interesting to you!
 
 ## Links to selected blog posts
 
@@ -13,6 +11,7 @@ I keep a blog [here](https://themerge.substack.com) and aim to put out an email 
 
 ## Publications
 
+- "Learning sparse symbolic policies for sepsis treatment" [paper-pdf](https://www.researchgate.net/publication/353224172_Learning_Sparse_Symbolic_Policies_for_Sepsis_Treatment)
 - "Improving Exploration in Policy Gradient Search: Application to Symbolic Optimization" [paper-pdf](https://mathai-iclr.github.io/papers/papers/MATHAI_16_paper.pdf) [poster-pdf](https://mathai-iclr.github.io/papers/posters/MATHAI_16_poster.png)
 - "Machine Learning Models for Identifying Risk Factors and Prediction of ALS Progression" [talk-video](https://www.youtube.com/watch?v=z6pCejDWXBA)
 - "Increasing performance of electric vehicles in ride-hailing services using deep reinforcement learning" [arxiv-paper](https://arxiv.org/abs/1912.03408) [talk-video](https://www.climatechange.ai/papers/neurips2019/33.html)
