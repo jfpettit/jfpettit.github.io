@@ -7,7 +7,7 @@ I keep a blog [here](https://themerge.substack.com) whenever I feel inspired to 
 ## Links to selected blog posts
 
 - Weird RL with hyperparameter optimizers [part-1](https://themerge.substack.com/p/weird-rl-with-hyperparameter-optimizers) [part-2](https://themerge.substack.com/p/weird-rl-part-2-training-in-the-browser)
-- [Breaking a Pong-playing RL agent](https://themerge.substack.com/p/breaking-a-pong-playing-rl-agent)
+- Breaking a Pong-playing RL agent [post](https://themerge.substack.com/p/breaking-a-pong-playing-rl-agent)
 
 ## Publications
 
