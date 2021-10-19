@@ -16,19 +16,11 @@ h1, h2, h3, h4 {
 }
 
 h1 {
-    font-size: 150%;
+    font-size: 60px;
 }
 
 h2 {
-    font-size: 150%;
-}
-
-h3 {
-    font-size: 150%;
-}
-
-h4 {
-    font-size: 150%;
+    font-size: 40px;
 }
 
 p {
@@ -36,7 +28,11 @@ p {
     font-size: large;
 }
 
-.nav {
+.navig {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.description{
     font-family: 'Roboto Mono', monospace;
 }
 
