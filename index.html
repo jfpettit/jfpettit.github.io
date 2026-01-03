@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob Pettit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #282828;
+            --bg-secondary: #3c3836;
+            --bg-tertiary: #504945;
+            --bg-active: #665c54;
+            --text-primary: #ebdbb2;
+            --text-secondary: #a89984;
+            --text-muted: #7c6f64;
+            --accent: #fabd2f;
+            --accent-hover: #f2c437;
+            --green: #b8bb26;
+            --aqua: #8ec07c;
+            --red: #fb4934;
+            --blue: #83a598;
+            --purple: #d3869b;
+            --orange: #fe8019;
+            --border: #504945;
+            --string: #b8bb26;
+            --keyword: #fabd2f;
+            --function: #fabd2f;
+            --comment: #928374;
+            --number: #d3869b;
+            --operator: #ebdbb2;
+            --type: #fabd2f;
+            --line-number: #7c6f64;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-active);
+        }
+
+        .syntax-string { color: var(--string); }
+        .syntax-keyword { color: var(--keyword); }
+        .syntax-function { color: var(--function); }
+        .syntax-comment { color: var(--comment); }
+        .syntax-number { color: var(--number); }
+        .syntax-operator { color: var(--operator); }
+        .syntax-type { color: var(--type); }
+        .syntax-property { color: var(--blue); }
+        .syntax-variable { color: var(--text-primary); }
+        .syntax-punctuation { color: var(--text-primary); }
+        .syntax-heading { color: var(--aqua); font-weight: bold; }
+        .syntax-bold { color: var(--orange); font-weight: bold; }
+        .syntax-link { color: var(--blue); text-decoration: underline; }
+
+        .touch-manipulation {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .touch-pan-y {
+            touch-action: pan-y;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background: var(--accent);
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const fileTree = {
+            name: 'jacob-pettit/',
+            expanded: true,
+            children: [
+                {
+                    name: 'research/',
+                    expanded: false,
+                    children: [
+                        { name: 'bio.json', type: 'json', content: 'json' },
+                        { name: 'research_interests.md', type: 'markdown', content: 'markdown' },
+                        { name: 'antibody_structure.pdb', type: 'protein', content: 'protein' }
+                    ]
+                },
+                {
+                    name: 'publications/',
+                    expanded: false,
+                    children: [
+                        { name: 'publications.bib', type: 'bibtex', content: 'bibtex' },
+                        { name: 'selected_papers.md', type: 'markdown', content: 'markdown' }
+                    ]
+                },
+                { name: 'about_me.md', type: 'markdown', content: 'markdown' },
+                { name: 'contact.md', type: 'markdown', content: 'markdown' }
+            ]
+        };
+
+        const fileContent = {
+            'bio.json': {
+                title: 'bio.json',
+                content: `{
+  "name": "Jacob Pettit",
+  "title": "Machine Learning Researcher",
+  "affiliation": "Lawrence Livermore National Laboratory",
+  "research_interests": [
+    "Deep reinforcement learning",
+    "Protein language models",
+    "Antibody design",
+    "Symbolic optimization"
+  ],
+  "bio": "I develop novel computational approaches that apply machine learning and optimization methods to protein design problems."
+}`
+            },
+            'research_interests.md': {
+                title: 'research_interests.md',
+                content: `# Research Interests
+
+## Machine Learning
+
+- Deep reinforcement learning
+- Symbolic optimization
+- Protein language models
+
+### Applications
+- Therapeutic protein design
+- Antibody optimization
+- Generative design
+
+## Computational Biology
+
+- Protein structure prediction
+- Antibody-antigen interactions
+- Molecular optimization
+
+### Tools
+- Molstar viewer
+- Deep learning models
+- Optimization algorithms`
+            },
+            'publications.bib': {
+                title: 'publications.bib',
+                content: `@article{landajuela2021,
+  author = {Landajuela, Mikel and Petersen, Brenden K. and Kim, Sookyung and Santiago, Claudio P. and Glatt, Ruben and Mundhenk, T. Nathan and Pettit, Jacob F. and Faissol, Daniel M.},
+  title = {Discovering symbolic policies with deep reinforcement learning},
+  journal = {Proceedings of the International Conference on Machine Learning},
+  year = {2021},
+  pages = {5979-5989},
+  volume = {139}
+}
+
+@article{landajuela2021b,
+  author = {Landajuela, Mikel and Petersen, Brenden K. and Kim, Sookyung and Santiago, Claudio P. and Glatt, Ruben and Mundhenk, T. Nathan and Pettit, Jacob F. and Faissol, Daniel M.},
+  title = {Improving exploration in policy gradient search: Application to symbolic optimization},
+  journal = {arXiv preprint arXiv:2107.09158},
+  year = {2021}
+}
+
+@article{pettit2019,
+  author = {Pettit, Jacob F. and Glatt, Ruben and Donadee, Jonathan R. and Petersen, Brenden K.},
+  title = {Increasing performance of electric vehicles in ride-hailing services using deep reinforcement learning},
+  journal = {arXiv preprint arXiv:1912.03408},
+  year = {2019}
+}
+
+@article{pettit2021,
+  author = {Pettit, Jacob F. and Petersen, Brenden K. and Silva, Felipe Leno and Larie, Dale B. and Cockrell, Chase and An, Gary and Faissol, Daniel M.},
+  title = {Learning sparse symbolic policies for sepsis treatment},
+  journal = {Lawrence Livermore National Laboratory Technical Report},
+  year = {2021},
+  institution = {LLNL}
+}
+
+@article{pettit2025,
+  author = {Pettit, Jacob F. and Lee, Chak Shing and Yang, Jiachen and Ho, Alex and Faissol, Daniel and Petersen, Brenden and Landajuela, Mikel},
+  title = {DisCo-DSO: Coupling discrete and continuous optimization for efficient generative design in hybrid spaces},
+  journal = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  year = {2025},
+  volume = {39},
+  number = {25},
+  pages = {27117-27126}
+}
+
+@article{hayes2025,
+  author = {Hayes, Conor F. and Silva, Felipe Leno da and Yang, Jiachen and Mundhenk, T. Nathan and Lee, Chak Shing and Pettit, Jacob F. and Santiago, Claudio and Kim, Sookyung and Kim, Joanne T. and Solis, Ignacio Aravena and Glatt, Ruben and Goncalves, Andre R. and Ladd, Alexander and Solak, Ahmet Can and Desautels, Thomas and Faissol, Daniel M. and Petersen, Brenden K. and Landajuela, Mikel},
+  title = {Deep Symbolic Optimization: Reinforcement Learning for Symbolic Mathematics},
+  journal = {arXiv preprint arXiv:2505.10762},
+  year = {2025}
+}
+
+@article{hayes2024,
+  author = {Hayes, Conor F. and Goncalves, Andre R. and Magana-Zook, Steven A. and Pettit, Jacob and Solak, Ahmet Can and Faissol, Daniel and Landajuela, Mikel},
+  title = {Combinatorial Optimization of Antibody Libraries via Constrained Integer Programming},
+  journal = {Proceedings of the International Conference on Autonomous Agents and Multiagent Systems},
+  year = {2024}
+}
+
+@article{chakraborty2025,
+  author = {Chakraborty, R. and Pettit, J. and Silva, M.S. and Lyon, E.A. and Davis, A. and Solomon, E. and others},
+  title = {Not all representations are equal: Comparing protein language models for antibody thermostability prediction},
+  journal = {NeurIPS 2025 Workshop on Multi-modal Foundation Models},
+  year = {2025}
+}
+
+@article{pettit2024,
+  author = {Pettit, Jacob and Lee, Chak Shing and Yang, Jiachen and Ho, Alex and Petersen, Brenden K. and Landajuela, Mikel},
+  title = {Generative Design of Decision Tree Policies for Reinforcement Learning},
+  journal = {ICML 2024 Workshop on Structured Probabilistic Inference and Generative Modeling},
+  year = {2024}
+}`
+            },
+            'antibody_structure.pdb': {
+                title: 'antibody_structure.pdb',
+                type: 'protein',
+                content: `1N8Z`
+            },
+            'about_me.md': {
+                title: 'about_me.md',
+                content: `
+[[PROTEIN_VIEWER]]
+
+# About Me
+
+I am a Machine Learning Researcher at Lawrence Livermore National Laboratory, where I develop novel computational approaches that apply machine learning and optimization methods to protein design problems.
+
+My research focuses on bridging the gap between discrete optimization and RL-guided search to accelerate the design of therapeutic proteins and antibodies.
+
+## Research Focus
+- Deep reinforcement learning for symbolic optimization
+- Protein language models for antibody design
+- Combinatorial optimization of antibody libraries
+- Generative design in hybrid optimization spaces
+
+See [research_interests.md](research_interests.md) for details on my research areas, or [selected_papers.md](selected_papers.md) for a curated list of publications.
+
+## Expertise
+- Reinforcement learning
+- Symbolic optimization
+- Protein language models
+- Constrained optimization
+
+## Contact
+
+## Email
+- jfpettit@gmail.com
+
+## Links
+- [Google Scholar](https://scholar.google.com/citations?user=qglcDFwAAAAJ)
+- [GitHub](https://github.com/jfpettit)
+
+See [contact.md](contact.md) for detailed contact information.`
+            },
+            'contact.md': {
+                title: 'contact.md',
+                content: `# Contact Information
+
+## Email
+- jfpettit@gmail.com
+
+## Affiliation
+- [Lawrence Livermore National Laboratory](https://www.llnl.gov)
+
+## Links
+- [Google Scholar](https://scholar.google.com/citations?user=qglcDFwAAAAJ)
+- [GitHub](https://github.com/jfpettit)
+- [LinkedIn](https://www.linkedin.com/in/jfpettit/)
+- [The Merge Blog](https://themerge.substack.com/)
+`
+},
+            'selected_papers.md': {
+                title: 'selected_papers.md',
+                content: `# Selected Publications
+
+## Conference Papers
+
+### DisCo-DSO (AAAI 2025)
+**Coupling Discrete and Continuous Optimization for Efficient Generative Design in Hybrid Spaces**
+
+We consider the challenge of black-box optimization within hybrid discrete-continuous and variable-length spaces—a problem that arises in various applications, such as decision tree learning and symbolic regression. We propose DisCo-DSO (Discrete-Continuous Deep Symbolic Optimization), a novel approach that uses a generative model to learn a joint distribution over discrete and continuous design variables to sample new hybrid designs. In contrast to standard decoupled approaches, in which the discrete and continuous variables are optimized separately, our method leverages a structured autoregressive decoder to generate variable-length sequences of both discrete and continuous tokens, enabling joint optimization and more efficient exploration of the design space. We demonstrate the effectiveness of our approach on several challenging problems in scientific discovery, including antibody library design and symbolic regression.
+
+### Deep Symbolic Optimization (arXiv 2025)
+**Reinforcement Learning for Symbolic Mathematics**
+
+Deep Symbolic Optimization (DSO) is a novel computational framework that enables symbolic optimization for scientific discovery, particularly in applications involving the search for intricate symbolic structures. One notable example is equation discovery, which aims to automatically derive mathematical models expressed in symbolic form. In DSO, the discovery process is formulated as a Markov decision process, where the state space consists of partially constructed symbolic expressions, and actions correspond to applying mathematical operators, variables, or constants. A policy network trained with reinforcement learning learns to navigate this vast combinatorial space, while a心理健康 objective function guides the search toward expressions that best fit the observed data. This approach has demonstrated state-of-the-art performance on symbolic regression benchmarks and has been successfully applied to real-world scientific problems, including protein design and materials science.
+
+### Combinatorial Optimization of Antibody Libraries (AAMAS 2025)
+**Antibody Library Design by Seeding Linear Programming with Inverse Folding and Protein Language Models**
+
+Antibody library design is a critical challenge in therapeutic protein development, requiring the selection of mutations that maximize binding affinity while maintaining solubility and stability. We present a novel approach that combines integer linear programming (ILP) with deep learning models to generate diverse, high-quality antibody libraries. Our method uses protein language models (pLMs) to predict the fitness effects of mutations and inverse folding models to estimate antigen-binding probability, which are then integrated into a constrained optimization framework. By seeding the ILP with scores from these deep learning models, we can efficiently explore the vast combinatorial space of possible mutations while ensuring that the resulting library satisfies critical biochemical constraints. This approach has shown significant improvements over traditional directed evolution methods in terms of both binding affinity and diversity.
+
+### Protein Language Models for Antibody Thermostability (NeurIPS 2025)
+**Not all representations are equal: Comparing protein language models for antibody thermostability prediction**
+
+The development of therapeutic antibodies requires careful optimization of multiple properties, including binding affinity, stability, and expressibility. While protein language models (pLMs) have shown remarkable success in predicting various protein properties, the choice of representation and model architecture can significantly impact prediction accuracy. In this work, we systematically compare different pLM architectures—including transformer-based, LSTM-based, and state-space models—on the task of predicting antibody thermostability. We evaluate both frozen embeddings and fine-tuned models across multiple datasets, analyzing the trade-offs between computational efficiency and predictive performance. Our results reveal that model choice matters significantly, with certain architectures showing superior performance on specific property prediction tasks. We also investigate the effect of training data composition and demonstrate that incorporating evolutionary information from multiple sequence alignments can substantially improve prediction accuracy.
+
+## Workshop Papers
+
+### Learning Sparse Symbolic Policies for Sepsis Treatment (ICML 2021)
+**Developing interpretable, sparse symbolic policies for medical decision-making**
+
+Sepsis is a life-threatening organ dysfunction caused by a dysregulated host response to infection. Despite its severity, no FDA-approved drug treatments exist. Recent work controlling sepsis simulations with deep reinforcement learning has successfully discovered effective cytokine mediation strategies. However, the performance of these neural network-based policies comes at the expense of their deployability in clinical settings, where sparsity and interpretability are required characteristics. To this end, we propose a pipeline to learn simple, sparse symbolic policies represented as short mathematical expressions. Our approach uses genetic programming combined with policy gradient optimization to discover interpretable decision rules that achieve competitive performance while maintaining clinical interpretability.
+
+### Increasing Performance of EVs in Ride-Hailing (arXiv 2019)
+**Deep reinforcement learning for electric vehicle fleet management**
+
+Electric vehicles (EVs) offer significant advantages for ride-hailing services, including lower operating costs and reduced environmental impact. However, the widespread adoption of EVs in fleet operations is hindered by range anxiety and the complexity of charging infrastructure management. We formulate the problem of EV fleet scheduling as a Markov decision process and propose a deep reinforcement learning approach to optimize vehicle assignment and charging decisions. Our method learns a policy that balances immediate revenue generation with long-term vehicle availability, considering factors such as predicted demand, charging station locations, and electricity pricing. Experimental results on real-world ride-hailing data demonstrate significant improvements in fleet utilization and profitability compared to baseline heuristics.`
+            }
+        };
+
+        function Sidebar({ fileTree, expandedFolders, setExpandedFolders, selectedFile, setSelectedFile, sidebarExpanded, setSidebarExpanded }) {
+            const allExpanded = Object.values(expandedFolders).every(v => v);
+            
+            const toggleFolder = (name) => {
+                setExpandedFolders(prev => ({
+                    ...prev,
+                    [name]: !prev[name]
+                }));
+            };
+            
+            const toggleAll = () => {
+                const newState = !allExpanded;
+                const newExpanded = {};
+                const collectFolders = (node) => {
+                    if (node.children) {
+                        newExpanded[node.name] = newState;
+                        node.children.forEach(collectFolders);
+                    }
+                };
+                collectFolders(fileTree);
+                setExpandedFolders(newExpanded);
+            };
+
+            const renderTree = (node, depth = 0) => {
+                if (node.children) {
+                    const isExpanded = expandedFolders[node.name];
+                    return (
+                        <div key={node.name}>
+                            <div
+                                className={`flex items-center px-3 py-1.5 cursor-pointer select-none touch-manipulation hover:bg-[#3c3836] ${
+                                    depth === 0 ? 'font-bold text-[#ebdbb2]' : ''
+                                }`}
+                                onClick={() => toggleFolder(node.name)}
+                            >
+                                <span className="mr-1 w-4 text-[#fabd2f]">
+                                    {isExpanded ? '▾' : '▸'}
+                                </span>
+                                <span className="text-sm">{node.name}</span>
+                            </div>
+                            {isExpanded && (
+                                <div className="ml-2">
+                                    {node.children.map(child => renderTree(child, depth + 1))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else {
+                    const isSelected = selectedFile === node.name;
+                    return (
+                        <div
+                            key={node.name}
+                            className={`flex items-center px-3 py-1.5 cursor-pointer select-none touch-manipulation ${
+                                isSelected ? 'bg-[#3c3836] text-[#fabd2f]' : 'hover:bg-[#3c3836] text-[#ebdbb2]'
+                            }`}
+                            onClick={() => setSelectedFile(node.name)}
+                        >
+                            <span className="mr-2 w-4 text-[#928374]">
+                                {isSelected ? '▸' : ' '}
+                            </span>
+                            <span className="text-sm">{node.name}</span>
+                        </div>
+                    );
+                }
+            };
+
+            if (!sidebarExpanded) {
+                return (
+                    <div className="w-10 flex-shrink-0 bg-[#282828] flex flex-col border-r border-[#504945]">
+                        <button
+                            onClick={() => setSidebarExpanded(true)}
+                            className="w-full p-2 flex items-center justify-center text-[#fabd2f] hover:bg-[#3c3836] transition-colors"
+                            title="Open file tree"
+                        >
+                            <span className="text-lg">▸</span>
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="w-56 flex-shrink-0 bg-[#282828] flex flex-col border-r border-[#504945] transition-all duration-200">
+                    <div className="px-3 py-2 flex items-center justify-between border-b border-[#504945]">
+                        <div className="flex items-center">
+                            <button
+                                onClick={() => setSidebarExpanded(false)}
+                                className="text-[#fabd2f] hover:bg-[#3c3836] p-1 rounded mr-2 transition-colors"
+                                title="Close file tree"
+                            >
+                                <span className="text-lg">▾</span>
+                            </button>
+                            <span className="text-xs font-bold uppercase tracking-wider text-[#7c6f64]">
+                                Nvim-Tree
+                            </span>
+                        </div>
+                        <button
+                            onClick={toggleAll}
+                            className="text-[#7c6f64] hover:text-[#ebdbb2] text-xs px-2 py-0.5 rounded hover:bg-[#3c3836] transition-colors"
+                            title={allExpanded ? 'Collapse all' : 'Expand all'}
+                        >
+                            {allExpanded ? '▾▾' : '▸▸'}
+                        </button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                        {renderTree(fileTree)}
+                    </div>
+                </div>
+            );
+        }
+
+        function BufferTab({ file, isActive, onClose, onClick }) {
+            const getFileIcon = (type) => {
+                switch(type) {
+                    case 'python': return '(py)';
+                    case 'json': return '(json)';
+                    case 'bibtex': return '(bib)';
+                    case 'markdown': return '(md)';
+                    case 'pdf': return '(pdf)';
+                    case 'protein': return '(pdb)';
+                    default: return '(txt)';
+                }
+            };
+
+            return (
+                <div
+                    className={`flex items-center px-3 py-1.5 cursor-pointer min-w-0 border-b-2 group ${
+                        isActive 
+                            ? 'bg-[#3c3836] border-b-[#fabd2f] text-[#ebdbb2]' 
+                            : 'bg-[#282828] border-b-transparent text-[#7c6f64] hover:bg-[#3c3836]'
+                    }`}
+                    onClick={onClick}
+                >
+                    <span className="text-xs mr-2 opacity-60">{getFileIcon(file.type)}</span>
+                    <span className="text-sm truncate">{file.title}</span>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onClose(e);
+                        }}
+                        className="ml-2 px-1.5 rounded hover:bg-[#504945] text-[#7c6f64] hover:text-[#ebdbb2] transition-all"
+                        title="Close buffer"
+                    >
+                        x
+                    </button>
+                </div>
+            );
+        }
+
+        function EditorContent({ file, content }) {
+            const [isEditing, setIsEditing] = useState(false);
+            const [ephemeralText, setEphemeralText] = useState('');
+            const inputRef = useRef(null);
+
+            if (!content) {
+                return (
+                    <div className="p-4">
+                        {isEditing ? (
+                            <textarea
+                                ref={inputRef}
+                                value={ephemeralText}
+                                onChange={(e) => setEphemeralText(e.target.value)}
+                                onBlur={() => setIsEditing(false)}
+                                placeholder="Go ahead, type something..."
+                                className="w-full h-64 bg-transparent text-[#ebdbb2] font-mono text-sm resize-none focus:outline-none"
+                                autoFocus
+                            />
+                        ) : (
+                            <p 
+                                className="text-[#7c6f64] cursor-text hover:text-[#a89984] transition-colors"
+                                onClick={() => setIsEditing(true)}
+                            >
+                                Select a file to view its contents
+                            </p>
+                        )}
+                    </div>
+                );
+            }
+
+            const renderContent = () => {
+                if (content.type === 'json') {
+                    return <JSONContent content={content.content} />;
+                } else if (content.type === 'python') {
+                    return <PythonContent content={content.content} />;
+                } else if (content.type === 'bibtex') {
+                    return <BibtexContent content={content.content} />;
+                } else if (content.type === 'protein') {
+                    return <ProteinViewer initialPdbId={content.content} />;
+                } else {
+                    return <MarkdownContent content={content.content} />;
+                }
+            };
+
+            return (
+                <div className="h-full flex flex-col">
+                    {content.type !== 'protein' && (
+                        <div className="flex items-center justify-between bg-[#282828] px-4 py-1 border-b border-[#504945]">
+                            <span className="text-sm text-[#ebdbb2]">"{content.title}"</span>
+                            <span className="text-xs text-[#7c6f64]">[No Name]</span>
+                        </div>
+                    )}
+                    <div className={content.type === 'protein' ? 'h-full' : 'flex-1 overflow-y-auto overflow-x-hidden p-4'}>
+                        {renderContent()}
+                    </div>
+                </div>
+            );
+        }
+
+        function JSONContent({ content }) {
+            const lines = content.split('\n');
+            return (
+                <div className="text-sm font-mono leading-relaxed">
+                    {lines.map((line, i) => (
+                        <div key={i} className="flex">
+                            <span className="text-[#7c6f64] w-8 flex-shrink-0 text-right pr-2 select-none">{i + 1}</span>
+                            <span className="flex-1 break-words whitespace-pre-wrap">{renderJSONLine(line)}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        function renderJSONLine(line) {
+            const parts = [];
+            let current = '';
+            let i = 0;
+            while (i < line.length) {
+                if (line[i] === '"' && (i === 0 || line[i-1] !== '\\')) {
+                    if (current) { parts.push(<span key={parts.length}>{current}</span>); current = ''; }
+                    let j = i + 1;
+                    while (j < line.length && (line[j] !== '"' || line[j-1] === '\\')) j++;
+                    parts.push(<span key={parts.length} className="syntax-variable">{line.substring(i, j+1)}</span>);
+                    i = j + 1;
+                } else if (line[i] === ':') {
+                    if (current) { parts.push(<span key={parts.length}>{current}</span>); current = ''; }
+                    parts.push(<span key={parts.length} className="syntax-operator">{line[i]}</span>);
+                    i++;
+                } else if (['{', '}', '[', ']'].includes(line[i])) {
+                    if (current) { parts.push(<span key={parts.length}>{current}</span>); current = ''; }
+                    parts.push(<span key={parts.length} className="syntax-punctuation">{line[i]}</span>);
+                    i++;
+                } else {
+                    current += line[i];
+                    i++;
+                }
+            }
+            if (current) parts.push(<span key={parts.length}>{current}</span>);
+            return <span>{parts}</span>;
+        }
+
+        function PythonContent({ content }) {
+            const lines = content.split('\n');
+            return (
+                <div className="text-sm font-mono leading-relaxed">
+                    {lines.map((line, i) => (
+                        <div key={i} className="flex">
+                            <span className="text-[#7c6f64] w-8 flex-shrink-0 text-right pr-2 select-none">{i + 1}</span>
+                            <span className="flex-1 break-words whitespace-pre-wrap">{renderPythonLine(line)}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        function renderPythonLine(line) {
+            const keywords = ['def', 'if', 'else', 'for', 'while', 'return', 'import', 'from', 'class', 'True', 'False', 'None', 'and', 'or', 'not', 'in', 'as', 'try', 'except', 'with'];
+            const parts = [];
+            let current = '';
+            let i = 0;
+            
+            while (i < line.length) {
+                if (line[i] === '#') {
+                    if (current) { parts.push(<span key={parts.length}>{current}</span>); current = ''; }
+                    parts.push(<span key={parts.length} className="syntax-comment">{line.substring(i)}</span>);
+                    break;
+                } else if (line[i] === '"' || line[i] === "'") {
+                    if (current && !keywords.includes(current)) {
+                        parts.push(<span key={parts.length}>{current}</span>);
+                    } else if (keywords.includes(current)) {
+                        parts.push(<span key={parts.length} className="syntax-keyword">{current}</span>);
+                    }
+                    current = '';
+                    let quote = line[i];
+                    let j = i + 1;
+                    while (j < line.length && (line[j] !== quote || line[j-1] === '\\')) j++;
+                    parts.push(<span key={parts.length} className="syntax-string">{line.substring(i, j+1)}</span>);
+                    i = j + 1;
+                } else if (/\s/.test(line[i])) {
+                    if (current && !keywords.includes(current)) {
+                        parts.push(<span key={parts.length}>{current}</span>);
+                    } else if (keywords.includes(current)) {
+                        parts.push(<span key={parts.length} className="syntax-keyword">{current}</span>);
+                    }
+                    current = '';
+                    parts.push(<span key={parts.length}>{line[i]}</span>);
+                    i++;
+                } else {
+                    current += line[i];
+                    i++;
+                }
+            }
+            if (current && !keywords.includes(current)) {
+                parts.push(<span key={parts.length}>{current}</span>);
+            } else if (keywords.includes(current) && current !== 'in' && current !== 'as') {
+                parts.push(<span key={parts.length} className="syntax-keyword">{current}</span>);
+            }
+            return <span>{parts}</span>;
+        }
+
+        function BibtexContent({ content }) {
+            const lines = content.split('\n');
+            return (
+                <div className="text-sm font-mono leading-relaxed">
+                    {lines.map((line, i) => (
+                        <div key={i} className="flex">
+                            <span className="text-[#7c6f64] w-8 flex-shrink-0 text-right pr-2 select-none">{i + 1}</span>
+                            <span className="flex-1 break-words whitespace-pre-wrap">{renderBibtexLine(line)}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        function renderBibtexLine(line) {
+            if (line.startsWith('@')) {
+                return <span className="syntax-keyword">{line}</span>;
+            }
+            if (line.includes('=')) {
+                const [key, ...valueParts] = line.split('=');
+                return (
+                    <span>
+                        <span className="syntax-type">{key.trim()}</span>
+                        <span className="syntax-operator">=</span>
+                        <span className="syntax-string">{valueParts.join('=')}</span>
+                    </span>
+                );
+            }
+            return <span className="syntax-comment">{line}</span>;
+        }
+
+        const proteins = [
+            { id: '1N8Z', name: 'Antibody-Antigen Complex' },
+            { id: '1aki', name: 'Horse Heart Myoglobin' },
+            { id: '1MLC', name: 'Antibody Fragment' },
+            { id: '2VSM', name: 'Immunoglobulin Structure' },
+            { id: '9GLZ', name: 'Engineered Antibody' },
+            { id: '9EZV', name: 'Monoclonal Antibody' },
+            { id: '9Z5Q', name: 'Antibody Fragment' }
+        ];
+
+        function MarkdownContent({ content }) {
+            const [selectedProtein, setSelectedProtein] = useState('1N8Z');
+            const [isMobile, setIsMobile] = useState(false);
+            const lines = content.split('\n');
+            
+            useEffect(() => {
+                setIsMobile(window.innerWidth < 768);
+            }, []);
+            
+            const proteins = [
+                { id: '1N8Z', name: 'Antibody-Antigen Complex' },
+                { id: '1aki', name: 'Horse Heart Myoglobin' },
+                { id: '1MLC', name: 'Antibody Fragment' },
+                { id: '2VSM', name: 'Immunoglobulin Structure' },
+                { id: '9GLZ', name: 'Engineered Antibody' },
+                { id: '9EZV', name: 'Monoclonal Antibody' },
+                { id: '9Z5Q', name: 'Antibody Fragment' }
+            ];
+            
+            const getImageUrl = (pdbId) => {
+                return `images/${pdbId.toUpperCase()}.png`;
+            };
+            
+            return (
+                <div className="text-sm font-mono leading-relaxed">
+                    {lines.map((line, i) => {
+                        if (line === '[[PROTEIN_VIEWER]]') {
+                            return (
+                                <div key={i} className="mb-4 -ml-8">
+                                    <div className="flex items-center justify-between bg-[#282828] px-4 py-2 border-b border-[#504945]">
+                                        <div className="flex items-center">
+                                            <span className="text-sm text-[#ebdbb2]">"antibody_structure.pdb"</span>
+                                            <span className="ml-2 text-xs text-[#7c6f64]">| PDB:</span>
+                                            <select
+                                                value={selectedProtein}
+                                                onChange={(e) => setSelectedProtein(e.target.value)}
+                                                className="ml-2 bg-[#3c3836] text-[#ebdbb2] text-xs px-2 py-1 border border-[#504945] rounded cursor-pointer focus:outline-none focus:border-[#fabd2f]"
+                                            >
+                                                {proteins.map(p => (
+                                                    <option key={p.id} value={p.id}>{p.id} - {p.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {isMobile ? (
+                                        <div className="h-[320px] md:h-80 border border-[#504945] flex items-center justify-center bg-[#1e1e1e]">
+                                            <img
+                                                src={getImageUrl(selectedProtein)}
+                                                alt={`Protein structure: ${selectedProtein}`}
+                                                className="max-h-full max-w-full object-contain"
+                                                onError={(e) => {
+                                                    e.target.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"><rect fill="#282828" width="320" height="320"/><text fill="#7c6f64" font-family="monospace" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Image not available</text></svg>');
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div 
+                                            className="h-[320px] md:h-80 border border-[#504945] relative"
+                                            onClick={(e) => {
+                                                e.currentTarget.querySelector('iframe').click();
+                                            }}
+                                        >
+                                            <iframe
+                                                src={`https://molstar.org/viewer/?pdb=${selectedProtein}&collapse=1&hide-controls=1`}
+                                                title="Protein Structure Viewer"
+                                                className="w-full h-full absolute inset-0"
+                                                style={{ border: 'none' }}
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+                        return (
+                            <div key={i} className="flex">
+                                <span className="text-[#7c6f64] w-8 flex-shrink-0 text-right pr-2 select-none">{i + 1}</span>
+                                <span className="flex-1 break-words whitespace-pre-wrap">{renderMarkdownLine(line)}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+
+        function renderMarkdownLine(line) {
+            if (line.startsWith('# ')) {
+                return <span className="syntax-heading text-lg block">{line}</span>;
+            }
+            if (line.startsWith('## ')) {
+                return <span className="syntax-heading text-base block">{line}</span>;
+            }
+            if (line.startsWith('### ')) {
+                return <span className="syntax-heading text-sm block">{line}</span>;
+            }
+            if (line.startsWith('- ')) {
+                const content = line.substring(2);
+                const linkResult = processInlineLinks(content);
+                return <span><span className="syntax-operator">-</span><span> </span>{linkResult}</span>;
+            }
+            if (line.startsWith('  - ')) {
+                const content = line.substring(4);
+                const linkResult = processInlineLinks(content);
+                return <span><span className="syntax-operator">  -</span><span> </span>{linkResult}</span>;
+            }
+            if (line.startsWith('**') && line.endsWith('**')) {
+                return <span className="syntax-bold">{line}</span>;
+            }
+            if (line.startsWith('`') && line.endsWith('`')) {
+                return <span className="syntax-string">{line}</span>;
+            }
+            
+            return processInlineLinks(line);
+        }
+        
+        function processInlineLinks(text) {
+            const internalExtensions = ['.md', '.json', '.bib', '.txt', '.py', '.pdb'];
+            
+            // Handle markdown link syntax: [text](url)
+            const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)\)/);
+            if (linkMatch) {
+                const linkText = linkMatch[1];
+                const url = linkMatch[2];
+                const isInternal = internalExtensions.some(ext => url.endsWith(ext));
+                
+                return (
+                    <span>
+                        {text.substring(0, linkMatch.index)}
+                        <a 
+                            href={isInternal ? '#' : url}
+                            target={isInternal ? '_self' : '_blank'}
+                            rel="noopener noreferrer"
+                            className="syntax-link hover:opacity-80"
+                            onClick={(e) => {
+                                if (isInternal) {
+                                    e.preventDefault();
+                                    window.dispatchEvent(new CustomEvent('openFile', { detail: url }));
+                                }
+                            }}
+                        >
+                            {linkText}
+                        </a>
+                        {processInlineLinks(text.substring(linkMatch.index + linkMatch[0].length))}
+                    </span>
+                );
+            }
+            
+            // Handle plain URLs
+            const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+            if (urlMatch) {
+                const url = urlMatch[1];
+                const before = text.substring(0, urlMatch.index);
+                const after = text.substring(urlMatch.index + url.length);
+                return (
+                    <span>
+                        {before}
+                        <a 
+                            href={url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="syntax-link hover:opacity-80"
+                        >
+                            {url}
+                        </a>
+                        {processInlineLinks(after)}
+                    </span>
+                );
+            }
+            
+            return <span className="text-[#ebdbb2]">{text}</span>;
+        }
+
+        function ProteinViewer({ initialPdbId }) {
+            const [selectedProtein, setSelectedProtein] = useState(initialPdbId || '1N8Z');
+            const proteins = [
+                { id: '1N8Z', name: 'Antibody-Antigen Complex' },
+                { id: '1aki', name: 'Horse Heart Myoglobin' },
+                { id: '1MLC', name: 'Antibody Fragment' },
+                { id: '2VSM', name: 'Immunoglobulin Structure' },
+                { id: '9GLZ', name: 'Engineered Antibody' },
+                { id: '9EZV', name: 'Monoclonal Antibody' },
+                { id: '9Z5Q', name: 'Antibody Fragment' }
+            ];
+
+            const currentProtein = proteins.find(p => p.id === selectedProtein) || proteins[0];
+
+            return (
+                <div className="h-full flex flex-col">
+                    <div className="flex items-center justify-between bg-[#282828] px-4 py-2 border-b border-[#504945]">
+                        <div className="flex items-center">
+                            <span className="text-sm text-[#ebdbb2]">"antibody_structure.pdb"</span>
+                            <span className="ml-2 text-xs text-[#7c6f64]">| PDB:</span>
+                            <select
+                                value={selectedProtein}
+                                onChange={(e) => setSelectedProtein(e.target.value)}
+                                className="ml-2 bg-[#3c3836] text-[#ebdbb2] text-xs px-2 py-1 border border-[#504945] rounded cursor-pointer focus:outline-none focus:border-[#fabd2f]"
+                            >
+                                {proteins.map(p => (
+                                    <option key={p.id} value={p.id}>{p.id} - {p.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex-1 flex flex-col">
+                        <div className="flex-1 bg-[#282828] relative">
+                            <iframe
+                                src={`https://molstar.org/viewer/?pdb=${selectedProtein}&collapse=1&hide-controls=1`}
+                                title="Protein Structure Viewer"
+                                className="w-full h-full absolute inset-0"
+                                style={{ border: 'none' }}
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className="bg-[#3c3836] px-4 py-3 border-t border-[#504945]">
+                            <h3 className="text-[#ebdbb2] font-medium mb-1">{currentProtein.name}</h3>
+                            <p className="text-[#a89984] text-sm">PDB: {selectedProtein.toUpperCase()}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function StatusLine({ selectedFile, openTabs, message }) {
+            const currentFile = fileContent[selectedFile];
+            const mode = 'NORMAL';
+            const displayMessage = message || `${openTabs.length} buffer(s) -- ${currentFile ? currentFile.title : 'No file'}`;
+            
+            return (
+                <div className="h-6 flex items-center text-xs">
+                    <div className="bg-[#b8bb26] text-[#282828] px-3 font-bold">
+                        {mode}
+                    </div>
+                    <div className="bg-[#3c3836] text-[#ebdbb2] px-3 flex-1 truncate border-l border-[#504945]">
+                        {displayMessage}
+                    </div>
+                    <div className="bg-[#fabd2f] text-[#282828] px-3 font-medium border-l border-[#504945]">
+                        utf-8 100%
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            const [expandedFolders, setExpandedFolders] = useState({
+                'jacob-pettit/': true,
+                'research/': true,
+                'publications/': true,
+            });
+            const [selectedFile, setSelectedFile] = useState('about_me.md');
+            const [openTabs, setOpenTabs] = useState(['about_me.md']);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [mobileView, setMobileView] = useState('editor');
+            const [showCursor, setShowCursor] = useState(true);
+            const [statusMessage, setStatusMessage] = useState('');
+            const [sidebarExpanded, setSidebarExpanded] = useState(false);
+            const [isMobile, setIsMobile] = useState(false);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setShowCursor(prev => !prev);
+                }, 1000);
+                return () => clearInterval(interval);
+            }, []);
+
+            useEffect(() => {
+                const checkMobile = () => {
+                    const mobile = window.innerWidth < 768;
+                    setIsMobile(mobile);
+                    setSidebarExpanded(!mobile);
+                };
+                
+                checkMobile();
+                window.addEventListener('resize', checkMobile);
+                return () => window.removeEventListener('resize', checkMobile);
+            }, []);
+
+            useEffect(() => {
+                const handleOpenFile = (e) => {
+                    const fileName = e.detail;
+                    if (fileContent[fileName]) {
+                        handleFileSelect(fileName);
+                    }
+                };
+                window.addEventListener('openFile', handleOpenFile);
+                return () => window.removeEventListener('openFile', handleOpenFile);
+            }, [openTabs, selectedFile]);
+
+            useEffect(() => {
+                if (statusMessage) {
+                    const timer = setTimeout(() => setStatusMessage(''), 3000);
+                    return () => clearTimeout(timer);
+                }
+            }, [statusMessage]);
+
+            const handleFileSelect = (fileName) => {
+                setSelectedFile(fileName);
+                if (!openTabs.includes(fileName)) {
+                    setOpenTabs([...openTabs, fileName]);
+                }
+                setMobileView('editor');
+                setStatusMessage('');
+            };
+
+            const handleCloseTab = (fileName, e) => {
+                e.preventDefault();
+                const newTabs = openTabs.filter(tab => tab !== fileName);
+                setOpenTabs(newTabs);
+                if (selectedFile === fileName && newTabs.length > 0) {
+                    const newSelected = newTabs[newTabs.length - 1];
+                    setSelectedFile(newSelected);
+                    setStatusMessage(`${fileName} closed`);
+                } else if (newTabs.length === 0) {
+                    setSelectedFile('');
+                    setStatusMessage(`${fileName} closed`);
+                }
+            };
+
+            const currentFile = fileContent[selectedFile];
+
+            return (
+                <div className="h-screen flex flex-col overflow-hidden bg-[#282828]">
+                    <div className="hidden md:flex items-center bg-[#282828] px-4 py-2 border-b border-[#504945]">
+                        <span className="text-[#fabd2f] font-bold">~ jacob-pettit</span>
+                        <span className="text-[#ebdbb2] mx-2">/</span>
+                        <span className="text-[#ebdbb2]">
+                            {currentFile ? currentFile.title : 'No file'}
+                        </span>
+                    </div>
+
+                    <div className="flex-1 flex overflow-hidden">
+                        <Sidebar
+                            fileTree={fileTree}
+                            expandedFolders={expandedFolders}
+                            setExpandedFolders={setExpandedFolders}
+                            selectedFile={selectedFile}
+                            setSelectedFile={handleFileSelect}
+                            sidebarExpanded={sidebarExpanded}
+                            setSidebarExpanded={setSidebarExpanded}
+                        />
+                        
+                        <div className="flex-1 flex flex-col overflow-hidden bg-[#282828] relative">
+                            <div className="flex bg-[#282828] border-b border-[#504945] overflow-x-auto">
+                                {openTabs.map(tab => (
+                                    <BufferTab
+                                        key={tab}
+                                        file={fileContent[tab]}
+                                        isActive={selectedFile === tab}
+                                        onClose={(e) => handleCloseTab(tab, e)}
+                                        onClick={() => setSelectedFile(tab)}
+                                    />
+                                ))}
+                            </div>
+                            
+                            <div className="flex-1 overflow-hidden">
+                                <EditorContent file={fileContent[selectedFile]} content={currentFile} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <StatusLine selectedFile={selectedFile} openTabs={openTabs} message={statusMessage} />
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
