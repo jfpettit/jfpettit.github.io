@@ -270,13 +270,14 @@
 
 I am a Machine Learning Researcher at Lawrence Livermore National Laboratory, where I develop novel computational approaches that apply machine learning and optimization methods to protein design problems.
 
-My research focuses on bridging the gap between discrete optimization and RL-guided search to accelerate the design of therapeutic proteins and antibodies.
+My research focuses on bridging the gap between discrete optimization and RL-guided search to accelerate the design of therapeutic proteins and antibodies, and on the development of cutting-edge models that allow us to predict protein developability attributes.
 
 ## Research Focus
 - Deep reinforcement learning for symbolic optimization
 - Protein language models for antibody design
 - Combinatorial optimization of antibody libraries
 - Generative design in hybrid optimization spaces
+- Antibody developability prediction
 
 See [research_interests.md](research_interests.md) for details on my research areas, or [selected_papers.md](selected_papers.md) for a curated list of publications.
 
@@ -318,39 +319,35 @@ See [contact.md](contact.md) for detailed contact information.`
                 title: 'selected_papers.md',
                 content: `# Selected Publications
 
-## Conference Papers
-
-### DisCo-DSO (AAAI 2025)
+### [DisCo-DSO](https://ojs.aaai.org/index.php/AAAI/article/view/34919) (AAAI 2025)
 **Coupling Discrete and Continuous Optimization for Efficient Generative Design in Hybrid Spaces**
 
-We consider the challenge of black-box optimization within hybrid discrete-continuous and variable-length spaces—a problem that arises in various applications, such as decision tree learning and symbolic regression. We propose DisCo-DSO (Discrete-Continuous Deep Symbolic Optimization), a novel approach that uses a generative model to learn a joint distribution over discrete and continuous design variables to sample new hybrid designs. In contrast to standard decoupled approaches, in which the discrete and continuous variables are optimized separately, our method leverages a structured autoregressive decoder to generate variable-length sequences of both discrete and continuous tokens, enabling joint optimization and more efficient exploration of the design space. We demonstrate the effectiveness of our approach on several challenging problems in scientific discovery, including antibody library design and symbolic regression.
+We consider the challenge of black-box optimization within hybrid discrete-continuous and variable-length spaces, a problem that arises in various applications, such as decision tree learning and symbolic regression. We propose DisCo-DSO (Discrete-Continuous Deep Symbolic Optimization), a novel approach that uses a generative model to learn a joint distribution over discrete and continuous design variables to sample new hybrid designs. In contrast to standard decoupled approaches, in which the discrete and continuous variables are optimized separately, our joint optimization approach uses fewer objective function evaluations, is robust against non-differentiable objectives, and learns from prior samples to guide the search, leading to significant improvement in performance and sample efficiency. Our experiments on a diverse set of optimization tasks demonstrate that the advantages of DisCo-DSO become increasingly evident as problem complexity grows. In particular, we illustrate DisCo-DSO's superiority over the state-of-the-art methods for interpretable reinforcement learning with decision trees.
 
-### Deep Symbolic Optimization (arXiv 2025)
+### [Deep Symbolic Optimization](https://arxiv.org/abs/2505.10762) (arXiv 2025)
 **Reinforcement Learning for Symbolic Mathematics**
 
-Deep Symbolic Optimization (DSO) is a novel computational framework that enables symbolic optimization for scientific discovery, particularly in applications involving the search for intricate symbolic structures. One notable example is equation discovery, which aims to automatically derive mathematical models expressed in symbolic form. In DSO, the discovery process is formulated as a Markov decision process, where the state space consists of partially constructed symbolic expressions, and actions correspond to applying mathematical operators, variables, or constants. A policy network trained with reinforcement learning learns to navigate this vast combinatorial space, while a心理健康 objective function guides the search toward expressions that best fit the observed data. This approach has demonstrated state-of-the-art performance on symbolic regression benchmarks and has been successfully applied to real-world scientific problems, including protein design and materials science.
+Deep Symbolic Optimization (DSO) is a novel computational framework that enables symbolic optimization for scientific discovery, particularly in applications involving the search for intricate symbolic structures. One notable example is equation discovery, which aims to automatically derive mathematical models expressed in symbolic form. In DSO, the discovery process is formulated as a sequential decision-making task. A generative neural network learns a probabilistic model over a vast space of candidate symbolic expressions, while reinforcement learning strategies guide the search toward the most promising regions. This approach integrates gradient-based optimization with evolutionary and local search techniques, and it incorporates in-situ constraints, domain-specific priors, and advanced policy optimization methods. The result is a robust framework capable of efficiently exploring extensive search spaces to identify interpretable and physically meaningful models. Extensive evaluations on benchmark problems have demonstrated that DSO achieves state-of-the-art performance in both accuracy and interpretability. In this chapter, we provide a comprehensive overview of the DSO framework and illustrate its transformative potential for automating symbolic optimization in scientific discovery.
 
-### Combinatorial Optimization of Antibody Libraries (AAMAS 2025)
+### [Combinatorial Optimization of Antibody Libraries](https://openreview.net/forum?id=jTtFqc2qnJ) (AAMAS 2025)
 **Antibody Library Design by Seeding Linear Programming with Inverse Folding and Protein Language Models**
 
-Antibody library design is a critical challenge in therapeutic protein development, requiring the selection of mutations that maximize binding affinity while maintaining solubility and stability. We present a novel approach that combines integer linear programming (ILP) with deep learning models to generate diverse, high-quality antibody libraries. Our method uses protein language models (pLMs) to predict the fitness effects of mutations and inverse folding models to estimate antigen-binding probability, which are then integrated into a constrained optimization framework. By seeding the ILP with scores from these deep learning models, we can efficiently explore the vast combinatorial space of possible mutations while ensuring that the resulting library satisfies critical biochemical constraints. This approach has shown significant improvements over traditional directed evolution methods in terms of both binding affinity and diversity.
+Designing effective antibody libraries is a challenging combinatorial search problem in computational biology. We propose a novel integer linear programming (ILP) method that explicitly controls diversity and affinity objectives when generating candidate libraries. Our approach formulates library design as a constrained optimization: we encode diversity parameters and predicted binding scores (from in silico deep mutational scanning and protein language models) as ILP constraints and objectives. This enables automated search for high-quality, diverse antibody sequences under explicit experimental constraints. We demonstrate the method on cold-start design tasks for Trastuzumab, D44.1, and Spesolimab, showing that our optimized libraries outperform baseline designs in both predicted affinity and sequence diversity. This hybrid search-and-learning framework illustrates how constrained optimization and predictive modeling can be combined to deliver interpretable, high-quality solutions to antibody library engineering.
 
-### Protein Language Models for Antibody Thermostability (NeurIPS 2025)
+### [Protein Language Models for Antibody Thermostability](https://openreview.net/forum?id=sFNomCGcA8) (NeurIPS 2025)
 **Not all representations are equal: Comparing protein language models for antibody thermostability prediction**
 
-The development of therapeutic antibodies requires careful optimization of multiple properties, including binding affinity, stability, and expressibility. While protein language models (pLMs) have shown remarkable success in predicting various protein properties, the choice of representation and model architecture can significantly impact prediction accuracy. In this work, we systematically compare different pLM architectures—including transformer-based, LSTM-based, and state-space models—on the task of predicting antibody thermostability. We evaluate both frozen embeddings and fine-tuned models across multiple datasets, analyzing the trade-offs between computational efficiency and predictive performance. Our results reveal that model choice matters significantly, with certain architectures showing superior performance on specific property prediction tasks. We also investigate the effect of training data composition and demonstrate that incorporating evolutionary information from multiple sequence alignments can substantially improve prediction accuracy.
+Predicting antibody thermostability is an important and challenging task in computational antibody design. Antibodies which are not thermostable may be incompatible with mass production and distribution. To this end, we assess how different protein language model (pLM) representations affect performance in the downstream task of predicting antibody thermostability. Our findings demonstrate that the choice of pLM has a large effect on predictor performance, even when data, model size, and hyperparameters are held stable. We also show that a performance boost may be obtained by combining pLM representations
 
-## Workshop Papers
-
-### Learning Sparse Symbolic Policies for Sepsis Treatment (ICML 2021)
+### [Learning Sparse Symbolic Policies for Sepsis Treatment](https://www.osti.gov/servlets/purl/1810686) (ICML 2021)
 **Developing interpretable, sparse symbolic policies for medical decision-making**
 
-Sepsis is a life-threatening organ dysfunction caused by a dysregulated host response to infection. Despite its severity, no FDA-approved drug treatments exist. Recent work controlling sepsis simulations with deep reinforcement learning has successfully discovered effective cytokine mediation strategies. However, the performance of these neural network-based policies comes at the expense of their deployability in clinical settings, where sparsity and interpretability are required characteristics. To this end, we propose a pipeline to learn simple, sparse symbolic policies represented as short mathematical expressions. Our approach uses genetic programming combined with policy gradient optimization to discover interpretable decision rules that achieve competitive performance while maintaining clinical interpretability.
+Sepsis is a life-threatening organ dysfunction caused by a dysregulated host response to infection. Despite its severity, no FDA-approved drug treatments exists. Recent work controlling sepsis simulations with deep reinforcement learning have successfully discovered effective cytokine mediation strategies. However, the performance of these neural-network based policies comes at the expense of their deployability in clinical settings, where sparsity and interpretability are required characteristics. To this end, we propose a pipeline to learn simple, sparse symbolic policies represented by constants and/or succinct, humanreadable expressions. We demonstrate our approach by learning a sparse symbolic policy that is efficacious on simulated sepsis patients.
 
-### Increasing Performance of EVs in Ride-Hailing (arXiv 2019)
+### [Increasing Performance of EVs in Ride-Hailing](https://arxiv.org/abs/1912.03408) (arXiv 2019)
 **Deep reinforcement learning for electric vehicle fleet management**
 
-Electric vehicles (EVs) offer significant advantages for ride-hailing services, including lower operating costs and reduced environmental impact. However, the widespread adoption of EVs in fleet operations is hindered by range anxiety and the complexity of charging infrastructure management. We formulate the problem of EV fleet scheduling as a Markov decision process and propose a deep reinforcement learning approach to optimize vehicle assignment and charging decisions. Our method learns a policy that balances immediate revenue generation with long-term vehicle availability, considering factors such as predicted demand, charging station locations, and electricity pricing. Experimental results on real-world ride-hailing data demonstrate significant improvements in fleet utilization and profitability compared to baseline heuristics.`
+New forms of on-demand transportation such as ride-hailing and connected autonomous vehicles are proliferating, yet are a challenging use case for electric vehicles (EV). This paper explores the feasibility of using deep reinforcement learning (DRL) to optimize a driving and charging policy for a ride-hailing EV agent, with the goal of reducing costs and emissions while increasing transportation service provided. We introduce a data-driven simulation of a ride-hailing EV agent that provides transportation service and charges energy at congested charging infrastructure. We then formulate a test case for the sequential driving and charging decision making problem of the agent and apply DRL to optimize the agent's decision making policy. We evaluate the performance against hand-written policies and show that our agent learns to act competitively without any prior knowledge`
             }
         };
 
@@ -714,7 +711,7 @@ Electric vehicles (EVs) offer significant advantages for ride-hailing services, 
             
             const proteins = [
                 { id: '1N8Z', name: 'Antibody-Antigen Complex' },
-                { id: '1aki', name: 'Horse Heart Myoglobin' },
+                { id: '1AKI', name: 'Horse Heart Myoglobin' },
                 { id: '1MLC', name: 'Antibody Fragment' },
                 { id: '2VSM', name: 'Immunoglobulin Structure' },
                 { id: '9GLZ', name: 'Engineered Antibody' },
